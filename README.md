@@ -273,27 +273,31 @@ D:\Environments\Anaconda\envs\AI\python.exe -m pytest -q
 python -m pytest -q
 ```
 
-`pyproject.toml` 已配置 `pythonpath = ["src"]`，无需手动设置 `PYTHONPATH`。当前离线基线：**105 passed**。
+`pyproject.toml` 已配置 `pythonpath = ["src"]`，无需手动设置 `PYTHONPATH`。当前离线测试按 `core/`、`platforms/` 与 `integration/` 组织，`manual/` 仅存放需要手动执行的联网或调试脚本。
 
 | 测试文件 | 覆盖内容 |
 |----------|----------|
-| `test_sight_locator.py` | 关键词 → 景点 / 地区 ID 解析、类型自动判断、解析边界条件 |
-| `test_sight_list.py` | POI 解析、请求体构建、分页取数 |
-| `test_sight_detail.py` | 详情接口字段解析 |
-| `test_comment_csv.py` | CSV 表头、字段顺序、跨页追加、断点进度 |
-| `test_comment_pagination.py` | 总页数向上取整计算 |
-| `test_comments_api.py` | 评论 API 响应结构探测 |
-| `test_pipeline_run.py` | `run()` 四种目标分发、城市/景点解析与统一 CLI 参数 |
-| `test_log.py` | 日志各级别输出 |
-| `test_logging_standard.py` | 分级日志格式、URL 脱敏、日志文件分组、请求/延迟统计 |
-| `test_storage_layout.py` | 行政区解析、安全路径、平台/省市/景点目录布局 |
-| `test_base_spider.py` | `BaseSpider` 共享重试封装、`CtripBaseSpider` JSON POST、继承契约 |
-| `test_keyboard_interrupt.py` | 评论爬虫与流水线 `Ctrl+C` 中断保留断点/已完成进度 |
-| `test_qunar_sight_detail.py` | 去哪儿详情页与简介页字段解析 |
-| `test_qunar_comment_locator.py` | 去哪儿 `window.context` 评论解析与兜底逻辑 |
-| `test_qunar_online.py` | 去哪儿联网冒烟测试（离线自动跳过） |
+| `core/test_base_spider.py` | `BaseSpider` 共享重试封装、`CtripBaseSpider` JSON POST、继承契约 |
+| `core/test_logger.py` | 分级日志格式、URL 脱敏、日志文件分组、请求/延迟统计 |
+| `core/test_storage_layout.py` | 行政区解析、安全路径、平台/省市/景点目录布局 |
+| `integration/test_pipeline_cli.py` | `run()` 四种目标分发、城市/景点解析与统一 CLI 参数 |
+| `integration/test_keyboard_interrupt.py` | 评论爬虫与流水线 `Ctrl+C` 中断保留断点/已完成进度 |
+| `platforms/ctrip/test_sight_locator.py` | 关键词 → 景点 / 地区 ID 解析、类型自动判断、解析边界条件 |
+| `platforms/ctrip/test_sight_list.py` | POI 解析、请求体构建、分页取数 |
+| `platforms/ctrip/test_comment_storage.py` | CSV 表头、字段顺序、跨页追加、断点进度 |
+| `platforms/ctrip/test_comment_pagination.py` | 总页数向上取整计算 |
+| `platforms/qunar/test_sight_workflow.py` | 去哪儿详情、列表、定位、评论与流水线工作流 |
+| `platforms/qunar/test_comments.py` | 去哪儿 `window.context` 评论解析与兜底逻辑 |
+| `platforms/qunar/test_online.py` | 去哪儿联网冒烟测试（离线自动跳过） |
 
-除 `test_qunar_online.py` 与 `tests/online_smoke_test.py` 外，其余测试均为离线测试（mock 网络），不依赖真实 API。`tests/online_smoke_test.py` 文件名不匹配 `test_*.py`，pytest 不会自动收集，需要时手动运行。
+| 手动脚本 | 用途 |
+|----------|------|
+| `manual/ctrip_online_smoke.py` | 携程联网冒烟测试 |
+| `manual/ctrip_comments_api_debug.py` | 携程评论 API 响应结构探测 |
+| `manual/ctrip_sight_detail_debug.py` | 携程景点详情 API 响应结构探测 |
+| `manual/logger_smoke.py` | 手动检查日志各级别输出 |
+
+除 `platforms/qunar/test_online.py` 外，其余自动收集的测试均为离线测试（mock 网络），不依赖真实 API。`manual/` 下的文件名不匹配 `test_*.py`，pytest 不会自动收集，需要时手动运行。
 
 ## 项目结构
 
@@ -333,7 +337,11 @@ LifeLens/
 │       ├── sentiment.py          #   情感分析
 │       ├── wordcloud.py          #   词云生成
 │       └── heatmap.py            #   地理热图
-├── tests/                        # 离线测试套件 + 联网冒烟脚本
+├── tests/                        # 测试套件
+│   ├── core/                     #   核心基础设施测试
+│   ├── platforms/                #   平台测试（ctrip / qunar）
+│   ├── integration/              #   跨模块与流水线测试
+│   └── manual/                   #   手动联网与调试脚本
 ├── data/                         # 输出目录 (gitignored)
 └── logs/                         # 日志目录 (gitignored)
 ```
