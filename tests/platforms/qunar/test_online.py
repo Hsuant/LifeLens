@@ -1,8 +1,8 @@
 """在线测试去哪儿爬虫：访问真实去哪儿触屏版页面。
 
 需联网运行。沙箱环境无法访问外网时测试会自动跳过。
-直接运行：python tests/test_qunar_online.py
-pytest 运行：python -m pytest tests/test_qunar_online.py -v
+直接运行：python tests/platforms/qunar/test_online.py
+pytest 运行：python -m pytest tests/platforms/qunar/test_online.py -v
 """
 
 import socket

@@ -3,8 +3,8 @@ import os
 import sys
 from pathlib import Path
 
-# 直接运行时将 src 加入路径（pytest 运行时由 conftest.py 处理）
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
+# 直接运行时将 src 加入路径
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 
 from lifelens.platforms.ctrip.sight_list import CtripAttractionScraper
 from lifelens.core.storage import json_storage
